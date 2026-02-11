@@ -1,17 +1,42 @@
 package es.iesquevedo;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import es.iesquevedo.app.ConsoleApp;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        // Crear contenedor Weld
+        Weld weld = new Weld();
+
+        try (WeldContainer container = weld.initialize()) {
+
+            // Obtener la instancia de ConsoleApp a través de CDI
+            ConsoleApp app = container.select(ConsoleApp.class).get();
+
+            Scanner scanner = new Scanner(System.in);
+
+            boolean salir = false;
+            while (!salir) {
+                System.out.println("\nOpciones:");
+                System.out.println("1 - Crear socio");
+                System.out.println("2 - Listar socios");
+                System.out.println("3 - Eliminar socio");
+                System.out.println("0 - Salir");
+                System.out.print("Opción: ");
+                String opcion = scanner.nextLine().trim();
+
+                switch (opcion) {
+                    case "1" -> app.crearSocio(scanner);
+                    case "2" -> app.listarSocios();
+                    case "3" -> app.eliminarSocio(scanner);
+                    case "0" -> salir = true;
+                    default -> System.out.println("Opción no válida");
+                }
+            }
         }
     }
 }
